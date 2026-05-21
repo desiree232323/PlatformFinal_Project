@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: platform_app
+    container_name: platform_app_project
     ports:
       - "8000:80"
     volumes:
@@ -12,11 +12,11 @@ services:
       - ./public:/app/public
       - ./var:/app/var
     environment:
-      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}?serverVersion=8.0.32&charset=utf8mb4"
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@platform_project_db:3306/${MYSQL_DATABASE}?serverVersion=8.0.32&charset=utf8mb4"
       APP_ENV: dev
       APP_DEBUG: "1"
     depends_on:
-      db:
+      platform_project_db:
         condition: service_healthy
     networks:
       - platform-network
@@ -26,17 +26,18 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+  
 
-  db:
+  platform_project_db:
     image: mysql:8.0
-    container_name: platform_db
+    container_name: project_platform_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3310:3306"
+      - "3311:3306"
     volumes:
       - platform-db-data:/var/lib/mysql
     networks:
